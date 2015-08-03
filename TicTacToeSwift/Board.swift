@@ -8,7 +8,17 @@
 
 import Foundation
 
-typealias Unit = Int
+typealias Unit = UInt
+
+enum Mark: String {
+    case O = "O"
+    case X = "X"
+
+    func inverse() -> Mark {
+        if self == .O { return .X }
+        else { return .O }
+    }
+}
 
 struct Board {
 
@@ -16,11 +26,11 @@ struct Board {
     let positions: Int
     var units = [Unit]()
 
-    var noughts: UInt16 = 0
-    var noughtsWinUnits = [Unit]()
+    var noughts: UInt = 0
+    var noughtsWinUnits = [[Unit]]()
 
-    var crosses: UInt16 = 0
-    var crossesWinUnits = [Unit]()
+    var crosses: UInt = 0
+    var crossesWinUnits = [[Unit]]()
 
     init(size: Int) {
         assert(size >= 3 && size <= 4, "Size must be greater than 3")
@@ -40,38 +50,38 @@ struct Board {
     }
 
     mutating func generateHorizontalUnits() {
-        var hUnit = 0
+        var hUnit: UInt = 0
         for var i = 0; i < size; i++ {
-            hUnit += pow(2, i)
+            hUnit += UInt(pow(2, i))
         }
 
         for var i = 0; i < size; i++ {
-            let unit = hUnit << (i * size)
+            let unit = hUnit << UInt(i * size)
             units.append(unit)
         }
     }
 
     mutating func generateVerticalUnits() {
-        var vUnit = 0
+        var vUnit: UInt = 0
         for var i = 0; i < positions; i++ {
             if i % size == 0 {
-                vUnit += pow(2,i)
+                vUnit += UInt(pow(2,i))
             }
         }
 
         for var i = 0; i < size; i++ {
-            let unit = vUnit << i
+            let unit = vUnit << UInt(i)
             units.append(unit)
         }
     }
 
     mutating func generateDiagonalUnits() {
-        var dUnit = 0
+        var dUnit: UInt = 0
         var tRow = 0
         var tCol = 0
         for var i = 0; i < positions; i++ {
             if i / size == tRow && i % size == tCol {
-                dUnit += pow(2,i)
+                dUnit += UInt(pow(2,i))
                 tRow++
                 tCol++
             }
@@ -83,7 +93,7 @@ struct Board {
         tCol = 0
         for var i = positions - 1; i >= 0; i-- {
             if i / size == tRow && i % size == tCol {
-                dUnit += pow(2,i)
+                dUnit += UInt(pow(2,i))
                 tRow--
                 tCol++
             }
@@ -97,8 +107,7 @@ struct Board {
 
         var res = [Unit]()
 
-        var bPos = 1
-        bPos =  bPos << (positions - position - 1)
+        var bPos = positionToBit(position)
         for unit in units {
             if unit & bPos > 0 { res.append(unit) }
         }
@@ -106,12 +115,106 @@ struct Board {
         return res
     }
 
+    func winUnitsForPosition(position: Int, mark: Mark) -> [Unit] {
+
+        var winUnits = [Unit]()
+
+        var bMark = positionsForMark(mark.inverse())
+        var units = unitsForPosition(position)
+
+        for unit in units {
+            var tmp = unit & bMark
+            if tmp ^ unit == unit {
+                winUnits.append(unit)
+            }
+        }
+
+        return winUnits
+    }
+
     mutating func calculateWinUnits() {
 
         for var i = 0; i < positions; i++ {
             let winUnitsForPos = unitsForPosition(i)
-            crossesWinUnits.append(winUnitsForPos.count)
-            noughtsWinUnits.append(winUnitsForPos.count)
+            crossesWinUnits.append(winUnitsForPos)
+            noughtsWinUnits.append(winUnitsForPos)
         }
+    }
+
+    mutating func setMark(mark: Mark, atPosition position: Int) {
+
+        validatePositionIsEmpty(mark, atPosition: position)
+
+        var newMarkPositions = positionsForMark(mark)
+        var bPos = positionToBit(position)
+
+        newMarkPositions = newMarkPositions | bPos
+
+        setPositionsForMark(mark, positions: newMarkPositions)
+
+        var inverseMarkWinUnits = winUnitsForMark(mark.inverse())
+        for var i = 0; i < positions; i++ {
+            inverseMarkWinUnits[i] = winUnitsForPosition(i, mark: mark.inverse())
+        }
+        setWinUnitsForMark(mark.inverse(), units: inverseMarkWinUnits)
+
+    }
+
+    func validatePositionIsEmpty(mark: Mark, atPosition position: Int) {
+
+        let markPositions = positionsForMark(mark)
+        var bPos = positionsForMark(mark)
+
+        if markPositions & bPos > 0 {
+            assertionFailure("Position is already taken")
+        }
+    }
+
+    func positionsForMark(mark: Mark) -> UInt {
+        let markPositions: UInt
+
+        switch mark {
+        case .X:
+            markPositions = crosses
+        case .O:
+            markPositions = noughts
+        }
+
+        return markPositions
+    }
+
+    func winUnitsForMark(mark: Mark) -> [[Unit]] {
+        let winUnits: [[Unit]]
+        switch mark {
+        case .X:
+            winUnits = crossesWinUnits
+        case .O:
+            winUnits = noughtsWinUnits
+        }
+
+        return winUnits
+    }
+
+    mutating func setWinUnitsForMark(mark: Mark, units: [[Unit]]) {
+        switch mark {
+        case .X:
+            crossesWinUnits = units
+        case .O:
+            noughtsWinUnits = units
+        }
+    }
+
+    mutating func setPositionsForMark(mark: Mark, positions: UInt) {
+        switch mark {
+        case .X:
+            crosses = positions
+        case .O:
+            noughts = positions
+        }
+    }
+    
+    func positionToBit(position: Int) -> UInt {
+        let pos = positions - position - 1
+        return UInt(pow(2, pos))
     }
 }

@@ -60,18 +60,33 @@ class BoardTests: XCTestCase {
     func testWinnigUnits() {
 
         XCTAssertEqual(board.noughtsWinUnits.count, board.positions, "One value for each position")
-        XCTAssertEqual(board.noughtsWinUnits[0], 3, "1H, 1V, 1D")
-        XCTAssertEqual(board.noughtsWinUnits[1], 2, "1H, 1V, 1D")
-        XCTAssertEqual(board.noughtsWinUnits[2], 3, "1H, 1V, 1D")
-        XCTAssertEqual(board.noughtsWinUnits[3], 2, "1H, 1V, 1D")
-        XCTAssertEqual(board.noughtsWinUnits[4], 4, "1H, 1V, 2D")
-        XCTAssertEqual(board.noughtsWinUnits[5], 2, "1H, 1V, 1D")
-        XCTAssertEqual(board.noughtsWinUnits[6], 3, "1H, 1V, 1D")
-        XCTAssertEqual(board.noughtsWinUnits[7], 2, "1H, 1V, 1D")
-        XCTAssertEqual(board.noughtsWinUnits[8], 3, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[0].count, 3, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[1].count, 2, "1H, 1V")
+        XCTAssertEqual(board.noughtsWinUnits[2].count, 3, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[3].count, 2, "1H, 1V")
+        XCTAssertEqual(board.noughtsWinUnits[4].count, 4, "1H, 1V, 2D")
+        XCTAssertEqual(board.noughtsWinUnits[5].count, 2, "1H, 1V")
+        XCTAssertEqual(board.noughtsWinUnits[6].count, 3, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[7].count, 2, "1H, 1V")
+        XCTAssertEqual(board.noughtsWinUnits[8].count, 3, "1H, 1V, 1D")
 
         XCTAssertEqual(board.crossesWinUnits.count, board.positions, "One value for each position")
 
+    }
+
+    func testSetMarkAtPosition() {
+
+        board.setMark(Mark.X, atPosition: 0)
+        XCTAssertEqual(board.crosses, 0b100000000, "")
+        XCTAssertEqual(board.noughtsWinUnits[0].count, 0, "Position 0 can't be part of a winning unit")
+        XCTAssertEqual(board.noughtsWinUnits[1].count, 1, "1H 1V -> 1V")
+        XCTAssertEqual(board.noughtsWinUnits[2].count, 2, "1H 1V 1D -> 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[3].count, 1, "1H, 1V -> 1H")
+        XCTAssertEqual(board.noughtsWinUnits[4].count, 3, "1H, 1V, 2D -> 1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[5].count, 2, "Not affected: 1H, 1V")
+        XCTAssertEqual(board.noughtsWinUnits[6].count, 2, "1H, 1V, 1D -> 1H, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[7].count, 2, "Not affected:  1H, 1V")
+        XCTAssertEqual(board.noughtsWinUnits[8].count, 2, "1H, 1V, 1D -> 1H, 1V")
     }
 
 }
