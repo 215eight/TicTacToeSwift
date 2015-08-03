@@ -33,7 +33,7 @@ Each position in the board has a value equal to a symbol. All positions start wi
  corner |  edge  | corner
 ```
 
-* __Units__: N number of contiguos positions horizontally, vertically or diagonally aligned. A board has a total of 2N + 2 nunber of units. N number of rows + N number of columns + 2 diagonals 
+* __Units__: N number of contiguous positions horizontally, vertically or diagonally aligned. A board has a total of 2N + 2 nunber of units. N number of rows + N number of columns + 2 diagonals 
 
 Horizontal Unit
 ```
@@ -62,12 +62,12 @@ Diagonal Unit
     |   | X     
 ```
 
-* __Units For Position__: Each position within a board belongs to a certain number of units depending its loation. A unit with that has the same symbol in all its positions, is called a winning unit 
+* __Units For Position__: Each position within a board belongs to a certain number of units depending its location. A unit with that has the same symbol in all its positions, is called a winning unit 
   + Position 0: Belongs to a horizontal unit (first row), a vertical unit (first column) and a diagonal unit
   + Position 3: Belongs to a horizontal unit and a vertical unit, but not a diagonal unit
   + Position 4: Belogns to a horizontal unit, a vertical unit and two diagonals
 
-* __Winning Units For Position__: In the initial state of a board where all positions are empty, the chances of each position to become part of a winning unit is equal to the number of units it belongs to. For each symbol, the number winning units for each position starts reducing every time a position is taken with an opposite symbol. The number of winning units for a taken position by an opposite symbol is equal to 0. Also, the positions in all the units for a taken position are reduced by one. Below a graphical explanation
+* __Winning Units For Position__: In the initial state of a board where all positions are empty, the chances of each position to become part of a winning unit is equal to the number of units it belongs to. For each symbol, the number of winning units for each position starts reducing every time a position is taken with an opposite symbol. The number of winning units for a taken position by an opposite symbol is equal to 0. Also, the positions in all the units for a taken position are reduced by one. Below a graphical explanation
 
 O Symbol Winning Units - Initial State
 ```
@@ -103,3 +103,7 @@ O Symbol Winning Units - Position 0 = X
 * __Block With Symbol__: Identifies units with N-1 positions all filled with the opposite of the given symbol as value. Select one of the units that meets the aforementioned criteria and set the empty position with the given symbol.
 
 * __Win With Symbol__: Identifies units with N-1 positions all filled with the given symbol as value. Select one of the unit that meets the aforementioned criteria and set the empty position with the given symbol.
+
+## Strategy For A Perfect Game
+
+One of the constraints in this exercise is that the computer never loses. In other words, it always wins or, at best, draws. 
