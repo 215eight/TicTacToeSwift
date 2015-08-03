@@ -163,9 +163,10 @@ struct Board {
     func validatePositionIsEmpty(mark: Mark, atPosition position: Int) {
 
         let markPositions = positionsForMark(mark)
-        var bPos = positionsForMark(mark)
+        let inverseMarkPositions = positionsForMark(mark.inverse())
+        var bPos = positionToBit(position)
 
-        if markPositions & bPos > 0 {
+        if markPositions & bPos > 0 && inverseMarkPositions & bPos > 0{
             assertionFailure("Position is already taken")
         }
     }
@@ -216,5 +217,42 @@ struct Board {
     func positionToBit(position: Int) -> UInt {
         let pos = positions - position - 1
         return UInt(pow(2, pos))
+    }
+
+    func getUnitsWithEmptyPositions(emptyPositions: Int, forMark mark: Mark) -> [Unit] {
+
+        assert(emptyPositions <= size, "Empty positions can't be greater than size")
+
+        var units = [Unit]()
+        for unit in self.units {
+            let markPositions = positionsForMark(mark)
+            let tmp = markPositions & unit
+
+            var index = 0
+            var unitIndex = 0
+            var validator = 0
+            while index < positions {
+                let checker = UInt(pow(2, index))
+
+                if unit & checker > 0 {
+                    if tmp & checker > 0 {
+                        validator += pow(2,unitIndex)
+                    }
+                    unitIndex++
+                }
+                index++
+            }
+
+            let takenPositions = size - emptyPositions
+            if popcount(UInt16(validator)) == takenPositions {
+                let inverseMarkPositions = positionsForMark(mark.inverse())
+                let tmp = inverseMarkPositions & unit
+                if tmp & unit ==  0 {
+                    units.append(unit)
+                }
+            }
+        }
+
+        return units
     }
 }

@@ -89,4 +89,26 @@ class BoardTests: XCTestCase {
         XCTAssertEqual(board.noughtsWinUnits[8].count, 2, "1H, 1V, 1D -> 1H, 1V")
     }
 
+    func testGetUnitsWithEmptyPositionsForMark() {
+
+        board.setMark(Mark.O, atPosition: 0)
+        board.setMark(Mark.O, atPosition: 6)
+        var units = board.getUnitsWithEmptyPositions(1, forMark: Mark.O)
+
+        XCTAssertEqual(units.count, 1, "1H")
+        XCTAssertEqual(units[0], 0b100100100, "")
+
+        board.setMark(Mark.X, atPosition: 3)
+        units = board.getUnitsWithEmptyPositions(1, forMark: Mark.O)
+
+        XCTAssertEqual(units.count, 0, "No empty units")
+
+        board.setMark(Mark.O, atPosition: 2)
+        units = board.getUnitsWithEmptyPositions(1, forMark: Mark.O)
+
+        XCTAssertEqual(units.count, 2, "1H, 1D")
+        XCTAssertEqual(units[0], 0b111000000, "")
+        XCTAssertEqual(units[1], 0b001010100, "")
+    }
+
 }
