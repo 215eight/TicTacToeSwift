@@ -39,11 +39,39 @@ class BoardTests: XCTestCase {
         XCTAssertEqual(board.units[7], 0b001010100, "Diagonal")
     }
 
-//    func testWinnigUnits() {
-//
-//        XCTAssertEqual(board.noughtsWinUnits.count, board.positions, "One value for each position")
-//        XCTAssertEqual(board.crossesWinUnits.count, board.positions, "One value for each position")
-//
-//    }
+    func testUnitsForPosition() {
+
+        XCTAssertEqual(board.unitsForPosition(0).count, 3, "1H, 1V, 1D")
+        XCTAssertEqual(board.unitsForPosition(0)[0], 0b111000000, "")
+        XCTAssertEqual(board.unitsForPosition(0)[1], 0b100100100, "")
+        XCTAssertEqual(board.unitsForPosition(0)[2], 0b100010001, "")
+
+        XCTAssertEqual(board.unitsForPosition(3).count, 2, "1H, 1V")
+        XCTAssertEqual(board.unitsForPosition(3)[0], 0b000111000, "")
+        XCTAssertEqual(board.unitsForPosition(3)[1], 0b100100100, "")
+
+        XCTAssertEqual(board.unitsForPosition(4).count, 4, "1H, 1V, 2D")
+        XCTAssertEqual(board.unitsForPosition(4)[0], 0b000111000, "")
+        XCTAssertEqual(board.unitsForPosition(4)[1], 0b010010010, "")
+        XCTAssertEqual(board.unitsForPosition(4)[2], 0b100010001, "")
+        XCTAssertEqual(board.unitsForPosition(4)[3], 0b001010100, "")
+    }
+
+    func testWinnigUnits() {
+
+        XCTAssertEqual(board.noughtsWinUnits.count, board.positions, "One value for each position")
+        XCTAssertEqual(board.noughtsWinUnits[0], 3, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[1], 2, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[2], 3, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[3], 2, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[4], 4, "1H, 1V, 2D")
+        XCTAssertEqual(board.noughtsWinUnits[5], 2, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[6], 3, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[7], 2, "1H, 1V, 1D")
+        XCTAssertEqual(board.noughtsWinUnits[8], 3, "1H, 1V, 1D")
+
+        XCTAssertEqual(board.crossesWinUnits.count, board.positions, "One value for each position")
+
+    }
 
 }
